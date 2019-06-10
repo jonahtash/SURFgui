@@ -5,6 +5,9 @@ import fs from 'fs';
 import DenseAppBar from './components/DenseAppBar';
 import FormSelectProgram from './components/FormSelectProgram';
 import FormConfigProgram from './components/FormConfigProgram';
+import FormRunProgram from './components/FormRunProgram';
+import ConfigSelectDialog from './components/ConfigSelectDialog';
+import ConfigSaveDialog from './components/ConfigSaveDialog';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -15,15 +18,32 @@ export default class App extends React.Component {
 			params: null,
 			log: '',
 			programs: [],
+			configs: [],
+			loadDialogOpen: false,
+			saveDialogOpen: false,
+			selectedConfig: null,
+			existing: false,
 		};
 		//refs
 		this.selectProgramForm = React.createRef();
+		this.configProgramForm = React.createRef();
+		this.saveDialog = React.createRef();
 
+		//binding functions
 		this.nextStep = this.nextStep.bind(this);
 		this.prevStep = this.prevStep.bind(this);
 		this.loadPrograms = this.loadPrograms.bind(this);
 		this.addProgram = this.addProgram.bind(this);
 		this.onProgramSelect = this.onProgramSelect.bind(this);
+		this.loadConfigs = this.loadConfigs.bind(this);
+		this.addConfig = this.addConfig.bind(this);
+		this.onConfigLoad = this.onConfigLoad.bind(this);
+		this.onConfigSave = this.onConfigSave.bind(this);
+		this.handleListItemClick = this.handleListItemClick.bind(this);
+		this.handleLoadClose = this.handleLoadClose.bind(this);
+		this.closeSave = this.closeSave.bind(this);
+		this.saveConfig = this.saveConfig.bind(this);
+		this.updateExistingConfig = this.updateExistingConfig.bind(this);
 		this.loadPrograms();
 	}
 	nextStep() {
@@ -57,11 +77,57 @@ export default class App extends React.Component {
 		);
 	}
 
-	onProgramSelect(prog) {
-		this.setState({selectedProgram : prog});
-		this.selectProgramForm.current.setState({isSelected:true});
+	addConfig(result) {
+		this.setState({ configs : this.state.configs.concat(result.data)});
 	}
 
+	loadConfigs(prog) {
+		Papa.parse('../config/programs/' +prog.prog_id+'.csv',
+			{
+				delimiter: ', ',
+				header:true,
+				download: true,
+				quoteChar: '"',
+				newline: "\r\n",
+				step: this.addConfig,
+			}
+		);
+	}
+
+	onConfigLoad(){
+		this.setState({loadDialogOpen: true});
+	}
+
+	onConfigSave() {
+		this.setState({saveDialogOpen: true});
+	}
+	closeSave() {
+		this.setState({saveDialogOpen: false});
+		if (this.state.existing) {
+			this.saveDialog.current.setToUpdate();
+		}
+	}
+	saveConfig(id, label, desc){
+		console.log(id, label, desc);
+		this.closeSave();
+	}
+	onProgramSelect(prog) {
+		this.setState({selectedProgram : prog, configs: []});
+		this.selectProgramForm.current.setState({isSelected:true});
+		this.loadConfigs(prog);
+	}
+	handleLoadClose() {
+		this.setState({loadDialogOpen: false});
+	}
+	handleListItemClick(conf) {
+		this.setState({selectedConfig : conf, existing: true});
+		this.saveDialog.current.setToUpdate();
+		this.configProgramForm.current.setConfig(conf);
+		this.handleLoadClose();
+	}
+	updateExistingConfig() {
+		console.log("hi");
+	}
 	render() {
 		let view;
 		// Load in .csv with programs
@@ -72,7 +138,11 @@ export default class App extends React.Component {
 				selectedProgram={this.state.selectedProgram} onProgramSelect={this.onProgramSelect}/>
 		}
 		if(this.state.step == 2) {
-			view = <FormConfigProgram prevStep = {this.prevStep} handleChange={this.handleChange} program={this.state.selectedProgram}/>
+			view = <FormConfigProgram ref = {this.configProgramForm} prevStep = {this.prevStep} nextStep={this.nextStep} handleChange={this.handleChange}
+				program={this.state.selectedProgram} loadConfig={this.onConfigLoad} saveConfig={this.onConfigSave}/>
+		}
+		if (this.state.step == 3) {
+			view = <FormRunProgram prevStep = {this.prevStep} nextStep={this.nextStep}/>
 		}
 
     return (
@@ -80,6 +150,10 @@ export default class App extends React.Component {
 				{DenseAppBar()}
 				<div className="back">
 					{view}
+					<ConfigSelectDialog onClose={this.handleLoadClose} handleListItemClick={this.handleListItemClick} configs={this.state.configs} open={this.state.loadDialogOpen}/>
+					<ConfigSaveDialog ref={this.saveDialog} onClose={this.handleSaveClose} open={this.state.saveDialogOpen}
+						confLabel={this.state.selectedConfig ? this.state.selectedConfig.label : ''} existing={this.state.existing}
+						handleClose={this.closeSave} saveConfig={this.saveConfig} updateExisting={this.updateExistingConfig}/>
 				</div>
 			</div>
 		);

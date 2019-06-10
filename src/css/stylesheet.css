@@ -6,6 +6,7 @@
 	margin-top: 20px;
 	display: inline-block;
 	text-align: left;
+	height: 75vh;
 }
 
 .prog-list-div {
@@ -13,20 +14,23 @@
 	box-sizing: border-box;
 	background-color: rgba(171, 171, 171, 0.68);
 	padding: 5px;
+	height: 92.1%;
 }
 .select-text-div {
 	margin: 10px 10px 10px 10px;
+	height: 5.25%
 }
 
 .prog-paper {
 	margin: 0px 10px 0px 10px;
-	height: 65vh;
+	height: 100%;
 }
 .selected-panel-outer {
 	display: inline-block;
 	width: 50%;
 	margin-top: 10px;
 	padding: 12px;
+	height: 4.1vh;
 }
 .selected-panel-inner {
 	display: inline-block;
@@ -38,30 +42,95 @@
 	margin: 5px 5px 5px 5px;
 }
 .config-program-paper{
-	width: 50%;
+	width: 75%;
 	height: 80vh;
 	text-align: center;
 	box-sizing: border-box;
 	display: inline-block;
 	margin-top: 15px;
+	position: relative;
 }
 .param-input{
 	width: 75%;
+	margin: 10px 7px 7px 7px !important;
 }
 .param-text-div {
-	margin: 10px 10px 10px 10px;
+	margin: 10px 10px 20px 10px;
 }
 .nav-panel-paper{
-	width: 50%;
+	width: 80%;
 	margin-top: 10px;
-	text-align: left;
 	display: inline-block;
 	padding: 7px;
+}
+.button-back {
+	float: left;
+	margin: 5px 5px 5px 5px;
+}
+.button-next{
+	float: right;
+	margin: 5px 5px 5px 5px;
 }
 .config-wrapper {
 	display: flex;
   flex-direction: column;
+	position: relative;
 }
 .foot-div{
-	flex-shrink: 0;
+}
+.load-button {
+	float:left;
+	margin: 5px 5px 10px 15px !important;
+	background-color: #018796 !important;
+}
+.save-button {
+	float:  right;
+	margin: 5px 15px 10px 5px !important;
+	background-color: #018796 !important;
+}
+.config-buttons-panel {
+	display: inline-block;
+	width: 100%;
+	position: absolute;
+  bottom: 0;
+  left: 0;
+	background-color: rgb(249, 249, 249) !important;
+}
+.run-paper {
+	width: 65%;
+	display: inline-block;
+	text-align: center;
+}
+.terminal-paper {
+	background-color: rgb(55, 55, 55) !important;
+	color: rgb(115, 201, 111) !important;
+	font-family: "Roboto Mono";
+	height: 50vh;
+	width: 65%;
+	display: inline-block;
+	margin: 10px 10px 10px 10px;
+}
+.run-wrapper {
+	height: 100%;
+}
+.run-paper-outer {
+	width: 75%;
+	height: 85%;
+	display: inline-block;
+	margin: 10px 10px 10px 10px;
+}
+.log-input {
+	width: 75%;
+}
+.log-check {
+	vertical-align: middle;
+}
+.run-button {
+	margin-top: -40vh !important;
+}
+.conf-input {
+	width: 75%;
+}
+.new-conf-paper {
+	margin: 7px 7px 7px 7px;
 }

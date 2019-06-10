@@ -2,10 +2,10 @@ import React from 'react'
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Collapse from '@material-ui/core/Collapse';
 
 import ParameterPanel from './ParameterPanel';
 import NavigationPanel from './NavigationPanel';
+import ConfigButtonsPanel from './ConfigButtonsPanel'
 
 class FormConfigProgram extends React.Component {
 	constructor(props) {
@@ -13,36 +13,53 @@ class FormConfigProgram extends React.Component {
 		this.state = {
 			formCompleted: false
 		}
-		this.makeChange = this.makeChange.bind(this);
+		this.paramPanel = React.createRef();
+		this.onParameterChange = this.onParameterChange.bind(this);
+		this.setConfig = this.setConfig.bind(this);
 	}
 
-	makeChange(v) {
-		this.setState({formCompleted : v})
+	onParameterChange(value, p) {
+		let refs = this.paramPanel.current.getInputs();
+		let completed = true;
+		this.props.program.prog_params.forEach(function(param){
+			if (param == p){
+				completed = (value.length > 0)
+			} else {
+				completed = (refs[param.id].current.getValue().length > 0);
+			}
+		})
+		this.setState({formCompleted: completed});
 	}
+
+	setConfig(config) {
+		let refs = this.paramPanel.current.getInputs();
+		this.props.program.prog_params.forEach(function(param){
+			refs[param.id].current.setValue(config[param.id]);
+		});
+	}
+
 	render () {
 
 		return(
-			<div  className="config-wrapper">
-			<Box component="div">
-				<Collapse in={!this.state.formCompleted} collapsedHeight="25vh">
-					<div>
-						<Paper className="config-program-paper">
-							<div className="param-text-div">
-								<Typography variant="h4">
-										{this.props.program.prog_label + " Parameters"}
-								</Typography>
-							</div>
-							<ParameterPanel program={this.props.program} handleChange={this.makeChange}/>
-						</Paper>
-					</div>
-			</Collapse>
-
-			</Box>
-			<footer>
-				<Box component="div" className="foot-div">
-					<NavigationPanel prevStep={this.props.prevStep} />
+			<div className="config-wrapper">
+				<Box component="div">
+						<div>
+							<Paper className="config-program-paper">
+								<div className="param-text-div">
+									<Typography variant="h4">
+											{this.props.program.prog_label + " Parameters"}
+									</Typography>
+								</div>
+								<ParameterPanel ref={this.paramPanel} program={this.props.program} handleChange={this.onParameterChange}/>
+								<ConfigButtonsPanel loadConfig={this.props.loadConfig} saveConfig={this.props.saveConfig}/>
+							</Paper>
+						</div>
 				</Box>
-			</footer>
+				<footer>
+					<Box component="div" className="foot-div">
+						<NavigationPanel prevStep={this.props.prevStep} nextStep={this.props.nextStep} hasNext={this.state.formCompleted} hasPrev={true} />
+					</Box>
+				</footer>
 			</div>
 			);
 	}

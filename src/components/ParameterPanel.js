@@ -6,24 +6,31 @@ class ParameterPanel extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let paramInputs = this.props.program.prog_params.map(param =>
-			<ParameterInput key={param.id} parameter={param} handleChange={this.change}/>
-		);
-		this.change = this.change.bind(this);
+
+		this.makeInputs = this.makeInputs.bind(this);
+		this.refs = {};
+		this.props.program.prog_params.map(param => this.refs[param.id] = React.createRef());
 		this.state = {
-			inputs: paramInputs
+			inputs: null,
+			refs: this.refs,
 		};
-		console.log("hi");
+		this.getInputs = this.getInputs.bind(this);
+		this.makeInputs();
+
+
 	}
 
-	change(i) {
-		let complete = true;
-		/*for (input in this.state.inputs) {
-			if (input.getValue().length < 1) {
-				complete = false
-			}
-		}*/
-		this.props.handleChange(complete);
+	makeInputs() {
+		let paramInputs = this.props.program.prog_params.map(param =>
+			<ParameterInput ref={this.refs[param.id]} key={param.id} parameter={param} handleChange={this.props.handleChange}/>
+		);
+		this.state = {
+			inputs: paramInputs,
+			refs: this.refs,
+		};
+	}
+	getInputs() {
+		return (this.state.refs);
 	}
 
 	render () {

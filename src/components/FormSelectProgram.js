@@ -16,7 +16,7 @@ class FormSelectProgram extends React.Component {
 	}
 	render () {
 		return(
-			<Box component="div">
+			<Box component="div" className="form-select-div">
 				<Paper className = "prog-list-paper-outer">
 					<div className="select-text-div">
 						<Typography variant="h4">

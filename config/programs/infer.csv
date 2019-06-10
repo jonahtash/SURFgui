@@ -1,0 +1,2 @@
+id, label, desc, in_csv, out_csv_type_1, out_csv_type_2
+default, "Default",  "table_full.csv", "type_one.csv", "type_2.csv"
