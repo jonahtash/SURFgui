@@ -105,7 +105,7 @@
 	background-color: rgb(55, 55, 55) !important;
 	font-family: 'Roboto Mono', monospace;
 	height: 50vh;
-	width: 65%;
+	width: 90%;
 	display: inline-block;
 	margin: 10px 10px 10px 10px;
 	text-align: left;
@@ -158,4 +158,7 @@
 }
 .run-button-panel {
 	display: inline-block;
+}
+.flags-button {
+	float: right;
 }

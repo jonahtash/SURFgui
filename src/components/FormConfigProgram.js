@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 
 import ParameterPanel from './ParameterPanel';
 import NavigationPanel from './NavigationPanel';
+import FlagsButtonPanel from './FlagsButtonPanel';
 
 class FormConfigProgram extends React.Component {
 	constructor(props) {
@@ -13,6 +14,7 @@ class FormConfigProgram extends React.Component {
 			formCompleted: false,
 		}
 		this.paramPanel = React.createRef();
+		this.checkCompletion = this.checkCompletion.bind(this);
 		this.onParameterChange = this.onParameterChange.bind(this);
 		this.setConfig = this.setConfig.bind(this);
 	}
@@ -22,24 +24,36 @@ class FormConfigProgram extends React.Component {
 		let completed = true;
 		this.props.updateParam(value, p);
 		this.props.program.prog_params.forEach(function(param){
-			if (param == p){
-				completed = (value.length > 0)
-			} else {
-				completed = (refs[param.id].current.getValue().length > 0);
+			if(param.direction!="flag") {
+				if (param == p){
+					completed = (value.length > 0) && completed;
+				} else {
+						completed = (refs[param.id].current.getValue().length > 0) && completed;
+				}
 			}
-		})
+		});
 		this.setState({formCompleted: completed});
 	}
-
+	checkCompletion() {
+		let refs = this.paramPanel.current.getInputs();
+		let completed = true;
+		this.props.program.prog_params.forEach(function(param){
+			if(param.direction!="flag") {
+				completed = (refs[param.id].current.getValue().length > 0) && completed;
+			}
+		});
+		this.setState({formCompleted: completed});
+	}
 	setConfig(config) {
 		let refs = this.paramPanel.current.getInputs();
 		this.props.program.prog_params.forEach(function(param){
 			refs[param.id].current.setValue(config[param.id]);
 		});
 	}
-
+	componentDidMount() {
+		this.checkCompletion();
+	}
 	render () {
-
 		return(
 			<div className="config-wrapper">
 				<Box component="div">
@@ -51,6 +65,7 @@ class FormConfigProgram extends React.Component {
 									</Typography>
 								</div>
 								<ParameterPanel ref={this.paramPanel} program={this.props.program} handleChange={this.onParameterChange}/>
+								<FlagsButtonPanel configFlags={this.props.configFlags}/>
 							</Paper>
 						</div>
 				</Box>

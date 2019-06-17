@@ -6,8 +6,7 @@ import DenseAppBar from './components/DenseAppBar';
 import FormSelectProgram from './components/FormSelectProgram';
 import FormConfigProgram from './components/FormConfigProgram';
 import FormRunProgram from './components/FormRunProgram';
-import ConfigSelectDialog from './components/ConfigSelectDialog';
-import ConfigSaveDialog from './components/ConfigSaveDialog';
+import ConfigFlagDialog from './components/ConfigFlagDialog';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -19,13 +18,16 @@ export default class App extends React.Component {
 			log: '',
 			programs: [],
 			configs: [],
-			loadDialogOpen: false,
-			saveDialogOpen: false,
+			flagDialogOpen: false,
 			selectedConfig: null,
 			existing: false,
 			stdout: '',
 			stderr: '',
+			selectedProgramFlags: [],
 		};
+
+		this.flags = {};
+
 		//refs
 		this.selectProgramForm = React.createRef();
 		this.configProgramForm = React.createRef();
@@ -50,6 +52,10 @@ export default class App extends React.Component {
 		this.updateParam = this.updateParam.bind(this);
 		this.runProgram = this.runProgram.bind(this);
 		this.onEnd = this.onEnd.bind(this);
+		this.configFlags = this.configFlags.bind(this);
+		this.closeFlagDialog = this.closeFlagDialog.bind(this);
+		this.findFlags = this.findFlags.bind(this);
+		this.updateFlags = this.updateFlags.bind(this);
 		this.loadPrograms();
 	}
 	nextStep() {
@@ -124,7 +130,17 @@ export default class App extends React.Component {
 	onProgramSelect(prog) {
 		this.setState({selectedProgram : prog, configs: []});
 		this.selectProgramForm.current.setState({isSelected:true});
+		this.findFlags(prog);
 		//this.loadConfigs(prog);
+	}
+	findFlags(prog) {
+		let flags = []
+		prog.prog_params.forEach((param) => {
+			if (param.direction == 'flag') {
+				flags.push(param);
+			}
+		});
+		this.setState({selectedProgramFlags: flags});
 	}
 	handleLoadClose() {
 		this.setState({loadDialogOpen: false});
@@ -155,11 +171,28 @@ export default class App extends React.Component {
 			bindings[param.id] = param.value;
 		});
 		this.runForm.current.setLoading(true);
-		let results = wrap(JSON.parse(this.state.selectedProgram.wrapper_conf.replace(/'/g, '"')), bindings, this.runForm.current.outUpdate, this.runForm.current.errUpdate, this.onEnd);
+		let results = wrap(JSON.parse(this.state.selectedProgram.wrapper_conf.replace(/'/g, '"')), bindings, this.flags, this.runForm.current.outUpdate, this.runForm.current.errUpdate, this.onEnd);
 	}
 	onEnd() {
 		this.runForm.current.detachOut();
 		this.runForm.current.setLoading(false);
+	}
+	configFlags() {
+		this.setState({flagDialogOpen: true});
+	}
+	closeFlagDialog() {
+		this.setState({flagDialogOpen: false});
+		console.log(this.flags);
+	}
+	updateFlags(inputs) {
+		this.flags = {}
+
+		Object.keys(inputs).forEach((k) => {
+			if( inputs[k].current && inputs[k].current.getValue().length > 0) {
+				this.flags[k] = inputs[k].current.getValue();
+			}
+		});
+		this.closeFlagDialog();
 	}
 	render() {
 		let view;
@@ -172,7 +205,7 @@ export default class App extends React.Component {
 		}
 		if(this.state.step == 2) {
 			view = <FormConfigProgram ref = {this.configProgramForm} prevStep = {this.prevStep} nextStep={this.nextStep} handleChange={this.handleChange}
-				program={this.state.selectedProgram} loadConfig={this.onConfigLoad} saveConfig={this.onConfigSave} updateParam={this.updateParam}/>
+				program={this.state.selectedProgram} loadConfig={this.onConfigLoad} saveConfig={this.onConfigSave} updateParam={this.updateParam} configFlags={this.configFlags}/>
 		}
 		if (this.state.step == 3) {
 			view = <FormRunProgram  ref={this.runForm} prevStep = {this.prevStep} nextStep={this.nextStep} runProgram={this.runProgram} stdout={this.state.stdout} stderr={this.state.stderr}/>
@@ -183,10 +216,8 @@ export default class App extends React.Component {
 				{DenseAppBar()}
 				<div className="back">
 					{view}
-					<ConfigSelectDialog onClose={this.handleLoadClose} handleListItemClick={this.handleListItemClick} configs={this.state.configs} open={this.state.loadDialogOpen}/>
-					<ConfigSaveDialog ref={this.saveDialog} onClose={this.handleSaveClose} open={this.state.saveDialogOpen}
-						confLabel={this.state.selectedConfig ? this.state.selectedConfig.label : ''} existing={this.state.existing}
-						handleClose={this.closeSave} saveConfig={this.saveConfig} updateExisting={this.updateExistingConfig}/>
+					<ConfigFlagDialog open={this.state.flagDialogOpen} program={this.state.selectedProgram} flagChanged={this.updateParam} handleClose={this.closeFlagDialog}
+						flags={this.state.selectedProgramFlags} updateFlags={this.updateFlags}/>
 				</div>
 			</div>
 		);

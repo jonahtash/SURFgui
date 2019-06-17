@@ -7,18 +7,19 @@ class OutputContainer extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			stderr: '',
-			stdout: '',
+			outs: [],
 			detached: false,
 		}
 		this.errUpdate = this.errUpdate.bind(this);
 		this.outUpdate = this.outUpdate.bind(this);
 	}
 	errUpdate(err) {
-		this.setState({stderr: this.state.stderr + err});
+		const newItem = <div className="stderr">{err.split ('\n').map ((item, i) => <p key={i}>{item}</p>)}</div>
+		this.setState({outs: this.state.outs.concat(newItem)});
 	}
 	outUpdate(out) {
-		this.setState({stdout: this.state.stdout + out});
+		const newItem = <div className="stdout">{out.split ('\n').map ((item, i) => <p key={i}>{item}</p>)}</div>
+		this.setState({outs: this.state.outs.concat(newItem)});
 	}
 	detach() {
 		this.setState({detached: true});
@@ -26,12 +27,7 @@ class OutputContainer extends React.Component {
 	render () {
 		return (
 			<div>
-				<div className="stdout">
-						{this.state.stdout.split ('\n').map ((item, i) => <p key={i}>{item}</p>)}
-				</div>
-				<div className="stderr">
-						{this.state.stderr.split ('\n').map ((item, i) => <p key={i}>{item}</p>)}
-				</div>
+				{this.state.outs}
 				<Grow in={this.state.detached}>
 					<div>
 						<Divider className="run-hr"/>

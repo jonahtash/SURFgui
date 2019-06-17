@@ -1,3 +1,5 @@
 node_modules/
 .compilerc
 .eslintrc
+wrappers/python/__pycache__/
+wrappers/python/temp/

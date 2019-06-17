@@ -10,7 +10,7 @@ class ParameterInput extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			value: '',
+			value: this.props.parameter.value,
 		}
 		this.loadFile = this.loadFile.bind(this);
 		this.onChange = this.onChange.bind(this);
@@ -46,7 +46,11 @@ class ParameterInput extends React.Component {
 		this.props.handleChange(value, this.props.parameter);
 	}
 	getValue() {
-		return (this.state.value);
+		if (this.state.value){
+			return (this.state.value);
+		}
+		return ('');
+
 	}
 	render () {
 		let p;

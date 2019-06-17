@@ -49,7 +49,7 @@ class FormRunProgram extends React.Component {
 						</Fab>
 					</div>
 				</Paper>
-				<NavigationPanel prevStep={this.props.prevStep} nextStep={this.props.nextStep} hasNext={false} hasPrev={true} />
+				<NavigationPanel prevStep={this.props.prevStep} nextStep={this.props.nextStep} hasNext={false} hasPrev={!this.state.loading} />
 			</div>
 		);
 	}

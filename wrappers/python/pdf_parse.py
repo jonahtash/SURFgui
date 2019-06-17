@@ -397,10 +397,11 @@ def _special_ratio(s):
 """END UTILITY FUNCTIONS"""
 
 def run_csv_output(pdf_in, csv_out):
+    print(os.getcwd())
     json_path = (pdf_in if pdf_in[-1] == '/' else pdf_in+'/') + 'json'
     if not os.path.exists(json_path):
         os.makedirs(json_path)
     print("Generating section JSONs...")    
-    os.system("java -Xmx10g -jar sp.jar "+pdf_in+" -o "+json_path)
+    os.system("java -Xmx10g -jar ./wrappers/python/sp.jar "+pdf_in+" -o "+json_path)
     print("Generating CSV tables ..")
-    run_json_folder(json_path,'D:\\Jonah\\Documents\\NIST\\Repos\\SURFgui\\wrappers\\python\\exclude.csv','D:\\Jonah\\Documents\\NIST\\Repos\\SURFgui\\wrappers\\python\\chars.csv',csv_out+"\\backup_files",csv_out)
+    run_json_folder(json_path,'./wrappers/python/exclude.csv','./wrappers/python/chars.csv',csv_out+"\\backup_files",csv_out+'.csv')
