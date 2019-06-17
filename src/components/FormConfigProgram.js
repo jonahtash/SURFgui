@@ -5,13 +5,12 @@ import Typography from '@material-ui/core/Typography';
 
 import ParameterPanel from './ParameterPanel';
 import NavigationPanel from './NavigationPanel';
-import ConfigButtonsPanel from './ConfigButtonsPanel'
 
 class FormConfigProgram extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			formCompleted: false
+			formCompleted: false,
 		}
 		this.paramPanel = React.createRef();
 		this.onParameterChange = this.onParameterChange.bind(this);
@@ -21,6 +20,7 @@ class FormConfigProgram extends React.Component {
 	onParameterChange(value, p) {
 		let refs = this.paramPanel.current.getInputs();
 		let completed = true;
+		this.props.updateParam(value, p);
 		this.props.program.prog_params.forEach(function(param){
 			if (param == p){
 				completed = (value.length > 0)
@@ -44,14 +44,13 @@ class FormConfigProgram extends React.Component {
 			<div className="config-wrapper">
 				<Box component="div">
 						<div>
-							<Paper className="config-program-paper">
+							<Paper className="config-program-paper" style={{overflow: 'auto'}}>
 								<div className="param-text-div">
 									<Typography variant="h4">
 											{this.props.program.prog_label + " Parameters"}
 									</Typography>
 								</div>
 								<ParameterPanel ref={this.paramPanel} program={this.props.program} handleChange={this.onParameterChange}/>
-								<ConfigButtonsPanel loadConfig={this.props.loadConfig} saveConfig={this.props.saveConfig}/>
 							</Paper>
 						</div>
 				</Box>

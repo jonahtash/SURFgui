@@ -23,11 +23,14 @@ export default class App extends React.Component {
 			saveDialogOpen: false,
 			selectedConfig: null,
 			existing: false,
+			stdout: '',
+			stderr: '',
 		};
 		//refs
 		this.selectProgramForm = React.createRef();
 		this.configProgramForm = React.createRef();
 		this.saveDialog = React.createRef();
+		this.runForm = React.createRef();
 
 		//binding functions
 		this.nextStep = this.nextStep.bind(this);
@@ -44,6 +47,9 @@ export default class App extends React.Component {
 		this.closeSave = this.closeSave.bind(this);
 		this.saveConfig = this.saveConfig.bind(this);
 		this.updateExistingConfig = this.updateExistingConfig.bind(this);
+		this.updateParam = this.updateParam.bind(this);
+		this.runProgram = this.runProgram.bind(this);
+		this.onEnd = this.onEnd.bind(this);
 		this.loadPrograms();
 	}
 	nextStep() {
@@ -79,6 +85,10 @@ export default class App extends React.Component {
 
 	addConfig(result) {
 		this.setState({ configs : this.state.configs.concat(result.data)});
+		if (result.data.id == "default") {
+			this.setState({selectedConfig : result.data, existing: true});
+			//this.configProgramForm.current.setConfig(result.data);
+		}
 	}
 
 	loadConfigs(prog) {
@@ -114,19 +124,42 @@ export default class App extends React.Component {
 	onProgramSelect(prog) {
 		this.setState({selectedProgram : prog, configs: []});
 		this.selectProgramForm.current.setState({isSelected:true});
-		this.loadConfigs(prog);
+		//this.loadConfigs(prog);
 	}
 	handleLoadClose() {
 		this.setState({loadDialogOpen: false});
 	}
 	handleListItemClick(conf) {
 		this.setState({selectedConfig : conf, existing: true});
+		this.state.selectedProgram.prog_params.forEach(function(param){
+			param["value"] = conf[param.id]
+		});
 		this.saveDialog.current.setToUpdate();
 		this.configProgramForm.current.setConfig(conf);
 		this.handleLoadClose();
 	}
 	updateExistingConfig() {
-		console.log("hi");
+		console.log("TODO");
+	}
+	updateParam(value, p){
+		this.state.selectedProgram.prog_params.forEach(function(param){
+			if (param == p) {
+				param["value"] = value
+			}
+			});
+	}
+	runProgram() {
+		let bindings = {};
+		let wrap = require('../wrappers/'+this.state.selectedProgram.wrapper_id+'/wrapper.js').default;
+		this.state.selectedProgram.prog_params.forEach(function(param){
+			bindings[param.id] = param.value;
+		});
+		this.runForm.current.setLoading(true);
+		let results = wrap(JSON.parse(this.state.selectedProgram.wrapper_conf.replace(/'/g, '"')), bindings, this.runForm.current.outUpdate, this.runForm.current.errUpdate, this.onEnd);
+	}
+	onEnd() {
+		this.runForm.current.detachOut();
+		this.runForm.current.setLoading(false);
 	}
 	render() {
 		let view;
@@ -139,10 +172,10 @@ export default class App extends React.Component {
 		}
 		if(this.state.step == 2) {
 			view = <FormConfigProgram ref = {this.configProgramForm} prevStep = {this.prevStep} nextStep={this.nextStep} handleChange={this.handleChange}
-				program={this.state.selectedProgram} loadConfig={this.onConfigLoad} saveConfig={this.onConfigSave}/>
+				program={this.state.selectedProgram} loadConfig={this.onConfigLoad} saveConfig={this.onConfigSave} updateParam={this.updateParam}/>
 		}
 		if (this.state.step == 3) {
-			view = <FormRunProgram prevStep = {this.prevStep} nextStep={this.nextStep}/>
+			view = <FormRunProgram  ref={this.runForm} prevStep = {this.prevStep} nextStep={this.nextStep} runProgram={this.runProgram} stdout={this.state.stdout} stderr={this.state.stderr}/>
 		}
 
     return (

@@ -15,8 +15,18 @@ class ParameterInput extends React.Component {
 		this.loadFile = this.loadFile.bind(this);
 		this.onChange = this.onChange.bind(this);
 		this.getValue = this.getValue.bind(this);
+		this.loadFolder = this.loadFolder.bind(this);
 	}
 
+	loadFolder () {
+		let path = dialog.showOpenDialog({ properties: ['openDirectory'] })
+		if (path) {
+			this.setState({value: path[0]});
+			this.props.handleChange(path[0], this.props.parameter);
+		} else {
+				console.log("No file selected");
+		}
+	}
 	loadFile () {
 		let path;
 		path = dialog.showOpenDialog();
@@ -55,6 +65,19 @@ class ParameterInput extends React.Component {
 					</InputAdornment>
 				)	,
 			}
+		}
+		if (this.props.parameter.type == "folder") {
+			p = {
+						endAdornment: (
+							<InputAdornment position="end">
+								<IconButton edge="end" aria-label="file" onClick={this.loadFolder}>
+									<SvgIcon>
+										<path d="M10 5L8 3H3c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1h-5z" />
+									</SvgIcon>
+								</IconButton>
+							</InputAdornment>
+						)
+					};
 		}
 		return (
 			<div>

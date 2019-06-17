@@ -11,7 +11,7 @@ class UpdateOptionPanel extends React.Component {
 			<div>
 				<DialogContent>
 					<DialogContentText>
-						Update existing configuration "{this.props.confLabel}, " or create new?
+						Update existing configuration "{this.props.confLabel}" or create new?
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>

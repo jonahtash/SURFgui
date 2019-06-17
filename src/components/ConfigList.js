@@ -13,7 +13,7 @@ class ConfigList extends React.Component {
 		).reduce((accu, elem) => accu === null ? [elem] : [...accu, <Divider /> , elem], null);
 
 		return(
-			<div>
+			<div style={{overflow: 'auto'}}>
 				<List component="nav" aria-label="Config List">
 					<Divider />
 					{cs}

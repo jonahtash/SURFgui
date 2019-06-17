@@ -1,0 +1,3 @@
+id, label, desc, param1, param2, param3
+v1, One configuration, lol, value1, value2, value3
+v2, Anonther configuration, stuff, test_table.csv, normalized_test.csv, hi

@@ -15,7 +15,7 @@ class ProgramList extends React.Component {
 		).reduce((accu, elem) => accu === null ? [elem] : [...accu, <Divider /> , elem], null);
 
 		return(
-			<Paper elevation={4} className="prog-paper">
+			<Paper elevation={4} className="prog-paper" style={{overflow: 'auto'}}>
 				<List component="nav" aria-label="Program List">
 					<Divider />
 					{listItems}
