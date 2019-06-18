@@ -41,11 +41,11 @@ class FormRunProgram extends React.Component {
 					<LogFilePanel />
 					<RunPanel ref={this.runPanel} stdout={this.props.stdout} stderr={this.props.stderr}/>
 					<div className="run-button-panel">
-						{this.state.loading && <CircularProgress size={68} className="button-loader"/>}
 						<Fab variant="extended" aria-label="Run" color="secondary" size="large" className="run-button" onClick={this.props.runProgram} disabled={this.state.loading}>
-							<SvgIcon>
-								<path d="M8 5v14l11-7z" />
-							</SvgIcon>
+							<div>
+								{!this.state.loading && <SvgIcon style={{marginTop:5}}><path d="M8 5v14l11-7z" /></SvgIcon>}
+								{this.state.loading && <CircularProgress size={50} className="button-loader"/>}
+							</div>
 						</Fab>
 					</div>
 				</Paper>

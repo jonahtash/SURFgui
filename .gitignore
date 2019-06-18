@@ -3,3 +3,5 @@ node_modules/
 .eslintrc
 wrappers/python/__pycache__/
 wrappers/python/temp/
+wrappers/conda/temp/
+wrappers/conda/__pycache__/
