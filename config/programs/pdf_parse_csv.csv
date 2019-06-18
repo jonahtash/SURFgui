@@ -1,0 +1,3 @@
+id, label, desc, pdf_in, csv_out
+conda, Conda Wrapper Folder, When the targets are in the conda wrapper folder, D:\Jonah\Documents\NIST\Repos\SURFgui\wrappers\conda\temp\pdf, D:\Jonah\Documents\NIST\Repos\SURFgui\wrappers\conda\temp\data.csv
+misc, Documents Misc, For using the NIST/misc folders, D:\Jonah\Documents\NIST\misc\pdf, D:\Jonah\Documents\NIST\misc\csv\data.csv

@@ -47,8 +47,11 @@ class FormConfigProgram extends React.Component {
 	setConfig(config) {
 		let refs = this.paramPanel.current.getInputs();
 		this.props.program.prog_params.forEach(function(param){
-			refs[param.id].current.setValue(config[param.id]);
+			if (param.direction != 'flag') {
+				refs[param.id].current.setValue(config[param.id]);
+			}
 		});
+		this.setState({formCompleted: true});
 	}
 	componentDidMount() {
 		this.checkCompletion();
@@ -65,7 +68,7 @@ class FormConfigProgram extends React.Component {
 									</Typography>
 								</div>
 								<ParameterPanel ref={this.paramPanel} program={this.props.program} handleChange={this.onParameterChange}/>
-								<FlagsButtonPanel configFlags={this.props.configFlags}/>
+								<FlagsButtonPanel configFlags={this.props.configFlags} loadConfig={this.props.loadConfig}/>
 							</Paper>
 						</div>
 				</Box>

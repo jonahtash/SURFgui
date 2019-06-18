@@ -7,7 +7,7 @@ import FormSelectProgram from './components/FormSelectProgram';
 import FormConfigProgram from './components/FormConfigProgram';
 import FormRunProgram from './components/FormRunProgram';
 import ConfigFlagDialog from './components/ConfigFlagDialog';
-
+import ConfigSelectDialog from './components/ConfigSelectDialog';
 export default class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -19,6 +19,7 @@ export default class App extends React.Component {
 			programs: [],
 			configs: [],
 			flagDialogOpen: false,
+			loadDialogOpen: false,
 			selectedConfig: null,
 			existing: false,
 			stdout: '',
@@ -131,7 +132,7 @@ export default class App extends React.Component {
 		this.setState({selectedProgram : prog, configs: []});
 		this.selectProgramForm.current.setState({isSelected:true});
 		this.findFlags(prog);
-		//this.loadConfigs(prog);
+		this.loadConfigs(prog);
 	}
 	findFlags(prog) {
 		let flags = []
@@ -150,7 +151,7 @@ export default class App extends React.Component {
 		this.state.selectedProgram.prog_params.forEach(function(param){
 			param["value"] = conf[param.id]
 		});
-		this.saveDialog.current.setToUpdate();
+		//this.saveDialog.current.setToUpdate();
 		this.configProgramForm.current.setConfig(conf);
 		this.handleLoadClose();
 	}
@@ -218,6 +219,8 @@ export default class App extends React.Component {
 					{view}
 					<ConfigFlagDialog open={this.state.flagDialogOpen} program={this.state.selectedProgram} flagChanged={this.updateParam} handleClose={this.closeFlagDialog}
 						flags={this.state.selectedProgramFlags} updateFlags={this.updateFlags}/>
+					<ConfigSelectDialog open={this.state.loadDialogOpen} program={this.state.selectedProgram} handleListItemClick={this.handleListItemClick} handleClose={this.handleLoadClose}
+						configs ={this.state.configs}/>
 				</div>
 			</div>
 		);
