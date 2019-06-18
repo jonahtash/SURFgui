@@ -17,7 +17,6 @@ function wrap(config, bindings, flags, outUpdate, errUpdate, onEnd) {
 		}
 	});
 
-	console.log(options)
 	let shell = spawn("cmd.exe", options);
 
 	shell.stdout.on('data', function (message) {
@@ -27,8 +26,6 @@ function wrap(config, bindings, flags, outUpdate, errUpdate, onEnd) {
 		errUpdate(err.toString());
 	});
 	shell.on('exit', function (code) {
-		console.log("end");
-		console.log(code)
 		onEnd();
 	});
 	return (1);
