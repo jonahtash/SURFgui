@@ -1,0 +1,2 @@
+id, label, desc, in_term_table, frag_table, new_term_table
+def, Default, Default configuration, Terms, TypeZero, TypesOneTwo

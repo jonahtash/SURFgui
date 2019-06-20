@@ -1,0 +1,2 @@
+id, label, desc, table, index_name, columns
+terms_norm, Terms full_normalized, Makes index terms_fm on Table terms wil column full_normalized, Terms, terms_fm, full_normalized

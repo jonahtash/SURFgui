@@ -5,3 +5,4 @@ wrappers/python/__pycache__/
 wrappers/python/temp/
 wrappers/conda/temp/
 wrappers/conda/__pycache__/
+log.txt

@@ -165,3 +165,14 @@
 .flags-button {
 	float: right;
 }
+.column-text {
+	font-family: 'Roboto Mono', monospace !important;
+}
+.columns-divider{
+	display: inline-block;
+	width: 90%;
+}
+.output-header {
+	text-align: left;
+	padding-left: 5%;
+}

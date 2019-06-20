@@ -1,8 +1,10 @@
 import React from 'react';
+const fs = require('fs');
 import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import Typography from '@material-ui/core/Typography';
 
 import RunPanel from './RunPanel';
 import NavigationPanel from './NavigationPanel';
@@ -17,15 +19,18 @@ class FormRunProgram extends React.Component {
 		}
 
 		this.runPanel = React.createRef();
+		this.logPanel = React.createRef();
 		this.errUpdate = this.errUpdate.bind(this);
 		this.outUpdate = this.outUpdate.bind(this);
 		this.detachOut = this.detachOut.bind(this);
 		this.setLoading = this.setLoading.bind(this);
 	}
 	errUpdate(err) {
+		this.writelog(err);
 		this.runPanel.current.errUpdate(err);
 	}
 	outUpdate(out) {
+		this.writelog(out);
 		this.runPanel.current.outUpdate(out);
 	}
 	detachOut() {
@@ -34,11 +39,17 @@ class FormRunProgram extends React.Component {
 	setLoading(v) {
 		this.setState({loading:v});
 	}
+	writelog(s) {
+		fs.appendFile(this.logPanel.current.getValue(), s, function (err) {
+		  if (err) throw err;
+		});
+	}
 	render () {
 		return (
 			<div className="run-wrapper">
 				<Paper className="run-paper-outer">
-					<LogFilePanel />
+					<Typography variant="h4">Run</Typography>
+					<LogFilePanel ref={this.logPanel}/>
 					<RunPanel ref={this.runPanel} stdout={this.props.stdout} stderr={this.props.stderr}/>
 					<div className="run-button-panel">
 						<Fab variant="extended" aria-label="Run" color="secondary" size="large" className="run-button" onClick={this.props.runProgram} disabled={this.state.loading}>

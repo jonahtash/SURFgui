@@ -4,6 +4,8 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 const { dialog } = require('electron').remote
 
 class ParameterInput extends React.Component {
@@ -29,10 +31,14 @@ class ParameterInput extends React.Component {
 	}
 	loadFile () {
 		let path;
-		path = dialog.showOpenDialog();
+		if(this.props.parameter.direction == 'in') {
+			path = dialog.showOpenDialog()[0];
+		} else {
+			path = dialog.showSaveDialog();
+		}
 		if (path) {
-			this.setState({value: path[0]});
-			this.props.handleChange(path[0], this.props.parameter);
+			this.setState({value: path});
+			this.props.handleChange(path, this.props.parameter);
 		} else {
 				console.log("No file selected");
 		}
@@ -56,6 +62,17 @@ class ParameterInput extends React.Component {
 		let p;
 		if (this.props.parameter.type == "string") {
 			p = null;
+		}
+		if (this.props.parameter.type == "table") {
+			return (
+				<div>
+					<Divider className="columns-divider"/>
+					<Typography variant="body1">Columns: <span className="column-text">{this.props.parameter.desc}</span></Typography>
+					<TextField id={this.props.parameter.id} value={this.state.value} label={this.props.parameter.label} margin="normal" variant="outlined" className="param-input"
+						onChange={this.onChange}
+						/>
+				</div>
+			);
 		}
 		if (this.props.parameter.type == "file") {
 			p = {
@@ -89,7 +106,7 @@ class ParameterInput extends React.Component {
 					onChange={this.onChange}
 					InputProps={p}
 					/>
-				</div>
+			</div>
 		);
 	}
 }

@@ -1,0 +1,2 @@
+id, label, desc, in_csv, out_table
+def, Default, Default configuration, ./wrappers/conda/table.csv, Originals
