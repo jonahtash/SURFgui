@@ -54,6 +54,7 @@
     "child_process": "^1.0.2",
     "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
+    "electron-log": "^3.0.6",
     "electron-squirrel-startup": "^1.0.0",
     "papaparse": "^5.0.0",
     "python-shell": "^1.0.7",

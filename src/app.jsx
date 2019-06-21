@@ -1,6 +1,8 @@
 import React from 'react';
 import Papa from 'papaparse';
 import fs from 'fs';
+const log = require('electron-log');
+log.catchErrors();
 
 import DenseAppBar from './components/DenseAppBar';
 import FormSelectProgram from './components/FormSelectProgram';
@@ -78,11 +80,11 @@ export default class App extends React.Component {
 	}
 
 	loadPrograms() {
-		Papa.parse('../config/programs.csv',
+		const file = fs.createReadStream('./config/programs.csv');
+		Papa.parse(file,
 			{
 				delimiter: '@',
 				header:true,
-				download: true,
 				quoteChar: '"',
 				newline: "\n",
 				step: this.addProgram,
@@ -99,11 +101,11 @@ export default class App extends React.Component {
 	}
 
 	loadConfigs(prog) {
-		Papa.parse('../config/programs/' +prog.prog_id+'.csv',
+		const file = fs.createReadStream('./config/programs/' +prog.prog_id+'.csv');
+		Papa.parse(file,
 			{
 				delimiter: ', ',
 				header:true,
-				download: true,
 				quoteChar: '"',
 				newline: "\r\n",
 				step: this.addConfig,
@@ -125,7 +127,6 @@ export default class App extends React.Component {
 		}
 	}
 	saveConfig(id, label, desc){
-		console.log(id, label, desc);
 		this.closeSave();
 	}
 	onProgramSelect(prog) {
@@ -168,6 +169,7 @@ export default class App extends React.Component {
 	runProgram() {
 		let bindings = {};
 		let wrap = require('../wrappers/'+this.state.selectedProgram.wrapper_id+'/wrapper.js').default;
+
 		this.state.selectedProgram.prog_params.forEach(function(param){
 			bindings[param.id] = param.value;
 		});
@@ -183,7 +185,6 @@ export default class App extends React.Component {
 	}
 	closeFlagDialog() {
 		this.setState({flagDialogOpen: false});
-		console.log(this.flags);
 	}
 	updateFlags(inputs) {
 		this.flags = {}
