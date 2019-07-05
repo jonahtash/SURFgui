@@ -10,6 +10,8 @@ import FormConfigProgram from './components/FormConfigProgram';
 import FormRunProgram from './components/FormRunProgram';
 import ConfigFlagDialog from './components/ConfigFlagDialog';
 import ConfigSelectDialog from './components/ConfigSelectDialog';
+import SideMenu from './components/SideMenu';
+import FormModifyPrograms from './components/FormModifyPrograms'
 export default class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -27,6 +29,7 @@ export default class App extends React.Component {
 			stdout: '',
 			stderr: '',
 			selectedProgramFlags: [],
+			drawerOpen: false,
 		};
 
 		this.flags = {};
@@ -59,6 +62,10 @@ export default class App extends React.Component {
 		this.closeFlagDialog = this.closeFlagDialog.bind(this);
 		this.findFlags = this.findFlags.bind(this);
 		this.updateFlags = this.updateFlags.bind(this);
+		this.toggleDrawer = this.toggleDrawer.bind(this);
+		this.onDrawerClose = this.onDrawerClose.bind(this);
+		this.runClick = this.runClick.bind(this);
+		this.modClick = this.modClick.bind(this);
 		this.loadPrograms();
 	}
 	nextStep() {
@@ -196,6 +203,24 @@ export default class App extends React.Component {
 		});
 		this.closeFlagDialog();
 	}
+	toggleDrawer() {
+		this.setState({drawerOpen : !this.state.drawerOpen});
+	}
+	onDrawerClose(){
+		this.setState({drawerOpen : false});
+	}
+	runClick() {
+		if (this.state.step > 3) {
+			this.setState({step : 1});
+		}
+		this.onDrawerClose();
+	}
+	modClick() {
+		if (this.state.step < 4) {
+			this.setState({step : 4});
+		}
+		this.onDrawerClose();
+	}
 	render() {
 		let view;
 		// Load in .csv with programs
@@ -212,16 +237,20 @@ export default class App extends React.Component {
 		if (this.state.step == 3) {
 			view = <FormRunProgram  ref={this.runForm} prevStep = {this.prevStep} nextStep={this.nextStep} runProgram={this.runProgram} stdout={this.state.stdout} stderr={this.state.stderr}/>
 		}
+		if (this.state.step == 4) {
+			view = <FormModifyPrograms />
+		}
 
     return (
 			<div>
-				{DenseAppBar()}
+				<DenseAppBar onClick={this.toggleDrawer} />
 				<div className="back">
 					{view}
 					<ConfigFlagDialog open={this.state.flagDialogOpen} program={this.state.selectedProgram} flagChanged={this.updateParam} handleClose={this.closeFlagDialog}
 						flags={this.state.selectedProgramFlags} updateFlags={this.updateFlags}/>
 					<ConfigSelectDialog open={this.state.loadDialogOpen} program={this.state.selectedProgram} handleListItemClick={this.handleListItemClick} handleClose={this.handleLoadClose}
 						configs ={this.state.configs}/>
+					<SideMenu open={this.state.drawerOpen} onDrawerClose={this.onDrawerClose} runClick={this.runClick} modClick={this.modClick}/>
 				</div>
 			</div>
 		);
