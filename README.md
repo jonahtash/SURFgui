@@ -27,10 +27,12 @@ The UI configuration is found in `config/programs.csv`. We reccomend that you do
 
 ### The process
 Fill out the these fields for your program<br />
-A __\*__ means this value should be surrounded by quotes<br />
-*prog_id*: A variable-like name for your program<br />
-*prog_label*:  The display text<br />
-*prog_desc*: Description text __\*__<br />
-*prog_params*: <br />
-*wrapper_id*: <br />
-*wrapper_conf*: <br />
+
+| Name          | Description                           |Quoted|
+| ------------- |:-------------------------------------:|-----:|
+| *prog_id*     | A variable-like name for your program | No   |
+| *prog_label*  | Program display name                  | Yes  |
+| *prog_desc*   | Text describing program               | Yes  |
+| *prog_params* |A list of JSON dictionaries describing parameters. See [this](#specials)| Yes  |
+| *wrapper_id*  | Name of wrapper. See [wrappers](#wrappers)                    | No   |
+| *wrapper_conf*| A config JSON. see  [this](#specials)                         | Yes  |
